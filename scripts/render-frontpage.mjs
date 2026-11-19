@@ -1,8 +1,9 @@
-// Generates v5 ("THE WORLD IN ONE DAY — Thursday 19 November 2026"):
-// 34 strictly-dated Thursday 19 November 2026 stories across all 6 continents
-// and space, 11 realistic press/satellite/NASA photos (zero tiny photo text),
-// high-contrast Natural Earth 110m dot-matrix world map, big 300px-legible
-// typography and top KPI numbers, and an explicit Wednesday-exclusion Date Check.
+// Generates v6 — Dark-Mode Digital Editorial Front Page ("The Economist × NYT Visuals"):
+// Exact 1024x1024 px obsidian (#0D1117) editorial canvas with elevated #161B22 cards,
+// glowing continent pills, gradient-lit 3-column hero cards with realistic photography,
+// giant high-contrast white KPI numbers, 8 photo-backed secondary cards,
+// a glowing Natural Earth 110m dot-matrix world map, 23 verified wire briefs (12-34),
+// and strict Thursday 19 November 2026 date discipline.
 
 import { execFileSync } from 'node:child_process';
 import { readFileSync, writeFileSync, statSync } from 'node:fs';
@@ -31,7 +32,7 @@ function pointInRing(lon, lat, ring) {
   return inside;
 }
 
-function buildHighContrastDotMap() {
+function buildGlowingDarkDotMap() {
   const geo = JSON.parse(readFileSync(GEOJSON_PATH, 'utf8'));
   const polygons = [];
   for (const feat of geo.features) {
@@ -67,16 +68,16 @@ function buildHighContrastDotMap() {
     return false;
   };
 
-  const W = 324;
-  const H = 178;
+  const W = 328;
+  const H = 198;
   const lonMin = -168, lonMax = 180;
   const latMin = -56, latMax = 78;
   const proj = (lon, lat) => [
     ((lon - lonMin) / (lonMax - lonMin)) * (W - 14) + 7,
-    ((latMax - lat) / (latMax - latMin)) * (H - 18) + 9,
+    ((latMax - lat) / (latMax - latMin)) * (H - 20) + 10,
   ];
 
-  // Real Natural Earth 110m dot-matrix landmasses in warm parchment gold on deep navy ocean
+  // Crisp steel-grey Natural Earth dot landmasses on obsidian #0D1117
   const dots = [];
   const cols = 74;
   const rows = 35;
@@ -86,27 +87,12 @@ function buildHighContrastDotMap() {
       const lon = lonMin + (c + 0.5) * ((lonMax - lonMin) / cols);
       if (isLand(lon, lat)) {
         const [x, y] = proj(lon, lat);
-        dots.push(`<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="1.75" fill="#D5C6A8"/>`);
+        dots.push(`<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="1.7" fill="#5B6B80"/>`);
       }
     }
   }
 
-  // Exact lat/lon pins for illustrated stories 1–11 (crisp crimson/gold pins, ZERO tiny text!)
-  const pins = [
-    { n: '1', lon: 114.1, lat: 22.5, color: '#C8232C' },  // Shenzhen, China
-    { n: '2', lon: 2.5, lat: 52.3, color: '#C8232C' },    // The Hague, Netherlands
-    { n: '3', lon: 174.8, lat: -35.0, color: '#C8232C' }, // Auckland, NZ (GTA VI first)
-    { n: '4', lon: -74.0, lat: 40.7, color: '#C8232C' },  // New York (Anthropic IPO)
-    { n: '5', lon: 36.5, lat: 30.0, color: '#C8232C' },   // Gaza / Gulf
-    { n: '6', lon: 30.7, lat: 39.2, color: '#C8232C' },   // Antalya, Türkiye
-    { n: '7', lon: 85.8, lat: 20.3, color: '#C8232C' },   // Odisha, India
-    { n: '8', lon: 16.0, lat: 52.5, color: '#C8232C' },   // Berlin, Germany
-    { n: '9', lon: 29.5, lat: 2.0, color: '#C8232C' },    // DR Congo / Horn
-    { n: '10', lon: 168.5, lat: -45.0, color: '#C8232C' },// Wellington, NZ
-    { n: '11', lon: -118.2, lat: 34.1, color: '#D4A13E' },// Pasadena, CA (NASA Voyager 1)
-  ];
-
-  // Subtle grey location dots for wire stories 12–34
+  // Subtle cyan/slate markers for briefs 12–34
   const wireDots = [
     [139.7, 35.7], [127.0, 37.5], [-75.7, 45.4], [149.1, -35.3],
     [90.4, 23.8], [77.6, 13.0], [2.35, 48.85], [-3.7, 40.4],
@@ -114,20 +100,43 @@ function buildHighContrastDotMap() {
     [30.2, 13.2], [16.4, 48.2],
   ].map(([lon, lat]) => {
     const [x, y] = proj(lon, lat);
-    return `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="2.7" fill="#94A3B8" stroke="#101D33" stroke-width="0.7"/>`;
+    return `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="2.6" fill="#94A3B8" stroke="#0D1117" stroke-width="0.7"/>`;
   }).join('');
+
+  // Glowing continent-coded pins matching stories 1–11
+  const pins = [
+    { n: '1', lon: 114.1, lat: 22.5, color: '#E84545' },  // Shenzhen (Asia)
+    { n: '2', lon: -74.0, lat: 40.7, color: '#2D6BE4' },  // New York (Americas)
+    { n: '3', lon: 174.8, lat: -35.0, color: '#06B6D4' }, // Auckland NZ (Oceania/Global)
+    { n: '4', lon: 2.0, lat: 52.3, color: '#3D9E5F' },    // The Hague (Europe)
+    { n: '5', lon: 30.7, lat: 39.2, color: '#D4A017' },   // Antalya (Mideast/Climate)
+    { n: '6', lon: 85.8, lat: 20.3, color: '#E84545' },   // Odisha (Asia)
+    { n: '7', lon: 16.5, lat: 52.5, color: '#3D9E5F' },   // Berlin (Europe)
+    { n: '8', lon: 36.8, lat: 29.8, color: '#D4A017' },   // Gaza & Gulf (Mideast)
+    { n: '9', lon: 29.5, lat: 2.0, color: '#8B5CF6' },    // DR Congo / Horn (Africa)
+    { n: '10', lon: 168.5, lat: -45.0, color: '#06B6D4' },// Wellington NZ (Oceania)
+    { n: '11', lon: -118.2, lat: 34.1, color: '#2D6BE4' },// Pasadena NASA (Americas/Space)
+  ];
 
   const pinSvg = pins.map((p) => {
     const [x, y] = proj(p.lon, p.lat);
-    const tc = p.n === '11' ? '#101D33' : '#FFFFFF';
     return `<g transform="translate(${x.toFixed(1)}, ${y.toFixed(1)})">
-      <circle r="7.5" fill="${p.color}" stroke="#FAF6EE" stroke-width="1.3"/>
-      <text y="2.9" text-anchor="middle" fill="${tc}" font-family="Avenir Next, sans-serif" font-size="8.4" font-weight="800">${p.n}</text>
+      <circle r="11" fill="${p.color}" fill-opacity="0.24"/>
+      <circle r="7.4" fill="${p.color}" stroke="#0D1117" stroke-width="1.3"/>
+      <text y="2.8" text-anchor="middle" fill="#FFFFFF" font-family="Avenir Next, sans-serif" font-size="8.3" font-weight="800">${p.n}</text>
     </g>`;
   }).join('');
 
   return `<svg viewBox="0 0 ${W} ${H}" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
-    <rect width="${W}" height="${H}" fill="#122139"/>
+    <rect width="${W}" height="${H}" fill="#0D1117"/>
+    <g stroke="#1E293B" stroke-width="0.6" stroke-dasharray="2 3">
+      <line x1="0" y1="44" x2="${W}" y2="44"/>
+      <line x1="0" y1="88" x2="${W}" y2="88"/>
+      <line x1="0" y1="132" x2="${W}" y2="132"/>
+      <line x1="82" y1="0" x2="82" y2="${H}"/>
+      <line x1="164" y1="0" x2="164" y2="${H}"/>
+      <line x1="246" y1="0" x2="246" y2="${H}"/>
+    </g>
     ${dots.join('')}
     ${wireDots}
     ${pinSvg}
@@ -136,19 +145,19 @@ function buildHighContrastDotMap() {
 
 const photos = {
   apec: loadDataUri('photo_apec_v2.jpg'),
-  icj: loadDataUri('photo_icj.jpg'),
-  gaming: loadDataUri('photo_gaming.jpg'),
   ipo: loadDataUri('photo_ipo.jpg'),
-  gulf: loadDataUri('photo_gulf.jpg'),
+  gaming: loadDataUri('photo_gaming.jpg'),
+  icj: loadDataUri('photo_icj.jpg'),
   cop31: loadDataUri('photo_cop31.jpg'),
   cyclone: loadDataUri('photo_cyclone.jpg'),
   berlin: loadDataUri('photo_berlin.jpg'),
+  gulf: loadDataUri('photo_gulf.jpg'),
   africa: loadDataUri('photo_africa.jpg'),
   cricket: loadDataUri('photo_cricket.jpg'),
   voyager: loadDataUri('photo_voyager.jpg'),
 };
 
-const worldMapSvg = buildHighContrastDotMap();
+const worldMapSvg = buildGlowingDarkDotMap();
 
 const html = `<!doctype html>
 <html lang="en">
@@ -165,182 +174,166 @@ const html = `<!doctype html>
     width: 1024px;
     height: 1024px;
     overflow: hidden;
-    background: #F8F4EA;
-    color: #12110F;
-    font-family: "Georgia", "Times New Roman", serif;
+    background: #0D1117;
+    color: #F0F6FC;
+    font-family: -apple-system, BlinkMacSystemFont, "Avenir Next", "Helvetica Neue", sans-serif;
     -webkit-font-smoothing: antialiased;
   }
 
   .page {
     width: 1024px;
     height: 1024px;
-    padding: 10px 16px 8px 16px;
+    padding: 10px 14px 8px 14px;
     display: flex;
     flex-direction: column;
-    background: #F8F4EA;
+    background:
+      radial-gradient(ellipse at 50% 0%, rgba(45, 107, 228, 0.12), transparent 55%),
+      #0D1117;
   }
 
-  /* ==================== MASTHEAD ==================== */
-  .top-rule-row {
+  /* ==================== HERO HEADER ==================== */
+  .header {
+    background: linear-gradient(180deg, #131922 0%, #0F141C 100%);
+    border: 1px solid #30363D;
+    border-top: 3px solid #E84545;
+    border-radius: 6px;
+    padding: 8px 14px 7px 14px;
+    margin-bottom: 7px;
+  }
+
+  .header-top {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    font-family: "Avenir Next", "Helvetica Neue", sans-serif;
-    font-size: 10.5px;
-    font-weight: 800;
-    letter-spacing: 1.3px;
-    text-transform: uppercase;
-    color: #9E1F1F;
-    border-bottom: 1.5px solid #141210;
-    padding-bottom: 3px;
     margin-bottom: 4px;
   }
 
-  .top-rule-row span.right {
-    color: #3E3A35;
-  }
-
-  .date-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-    margin-bottom: 2px;
-  }
-
-  .date-main {
+  .date-title {
     font-family: "Georgia", "Times New Roman", serif;
-    font-size: 47px;
+    font-size: 42px;
     font-weight: 700;
     line-height: 0.98;
-    letter-spacing: -0.6px;
-    color: #0E1726;
-  }
-
-  .cal-pill {
-    display: flex;
-    align-items: center;
-    border: 2px solid #0E1726;
-    border-radius: 3px;
-    overflow: hidden;
-    font-family: "Avenir Next", "Helvetica Neue", sans-serif;
-    flex-shrink: 0;
-  }
-
-  .cal-pill-m {
-    background: #B3261E;
+    letter-spacing: -0.5px;
     color: #FFFFFF;
-    font-size: 13px;
-    font-weight: 900;
-    letter-spacing: 1.2px;
-    padding: 6px 9px;
   }
 
-  .cal-pill-d {
-    background: #FFFFFF;
-    color: #0E1726;
-    font-size: 22px;
-    font-weight: 900;
-    padding: 2px 10px;
-    line-height: 1.1;
+  .header-right {
+    text-align: right;
   }
 
-  .sub-banner {
+  .eyebrow {
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: #E84545;
+  }
+
+  .subtitle {
     font-family: "Georgia", serif;
     font-style: italic;
-    font-size: 13.5px;
-    color: #8B1E1A;
-    margin-bottom: 5px;
+    font-size: 13px;
+    color: #9FB0C4;
+    margin-top: 2px;
   }
 
-  /* Continental Breadth Bar */
-  .region-bar {
-    display: grid;
-    grid-template-columns: 9fr 7fr 6fr 4fr 4fr 2.4fr 2.6fr;
-    gap: 2px;
-    margin-bottom: 5px;
-  }
-
-  .r-seg {
-    font-family: "Avenir Next", "Helvetica Neue", sans-serif;
-    font-size: 9px;
-    font-weight: 800;
-    letter-spacing: 0.6px;
-    text-transform: uppercase;
-    color: #FFFFFF;
-    text-align: center;
-    padding: 2.5px 2px;
-    white-space: nowrap;
-  }
-
-  .rs-asia { background: #A62626; }
-  .rs-amer { background: #1E6F50; }
-  .rs-eur { background: #1E4E8C; }
-  .rs-me { background: #B85D19; }
-  .rs-afr { background: #5B3C88; }
-  .rs-oce { background: #0E7490; }
-  .rs-wld { background: #3D4450; }
-
-  /* 6 HUGE TOP KPI NUMBERS (100% legible at 300px) */
-  .kpi-strip {
+  /* Six glowing continent pills */
+  .continent-row {
     display: grid;
     grid-template-columns: repeat(6, 1fr);
-    border-top: 1px solid #C8BFA9;
-    border-bottom: 2px solid #141210;
-    background: #F2ECE0;
-    margin-bottom: 8px;
+    gap: 6px;
+    margin-top: 5px;
   }
 
-  .kpi-cell {
-    padding: 4px 6px;
+  .c-pill {
+    font-size: 9.2px;
+    font-weight: 800;
+    letter-spacing: 0.7px;
+    text-transform: uppercase;
     text-align: center;
-    border-right: 1px solid #CFC6B2;
+    padding: 3px 4px;
+    border-radius: 4px;
+    color: #FFFFFF;
+    border: 1px solid rgba(255, 255, 255, 0.18);
   }
 
-  .kpi-cell:last-child { border-right: none; }
+  .cp-asia { background: rgba(232, 69, 69, 0.24); border-color: #E84545; color: #FF9494; box-shadow: 0 0 10px rgba(232, 69, 69, 0.28); }
+  .cp-amer { background: rgba(45, 107, 228, 0.24); border-color: #2D6BE4; color: #93C5FD; box-shadow: 0 0 10px rgba(45, 107, 228, 0.28); }
+  .cp-eur  { background: rgba(61, 158, 95, 0.24);  border-color: #3D9E5F; color: #86EFAC; box-shadow: 0 0 10px rgba(61, 158, 95, 0.28); }
+  .cp-me   { background: rgba(212, 160, 23, 0.24); border-color: #D4A017; color: #FDE68A; box-shadow: 0 0 10px rgba(212, 160, 23, 0.28); }
+  .cp-afr  { background: rgba(139, 92, 246, 0.24); border-color: #8B5CF6; color: #DDD6FE; box-shadow: 0 0 10px rgba(139, 92, 246, 0.28); }
+  .cp-oce  { background: rgba(6, 182, 212, 0.24);  border-color: #06B6D4; color: #A5F3FC; box-shadow: 0 0 10px rgba(6, 182, 212, 0.28); }
 
-  .kpi-num {
-    font-family: "Georgia", serif;
-    font-size: 20px;
+  /* ==================== GIANT STAT BAR (20% BIGGER NUMBERS) ==================== */
+  .stat-bar {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    background: #161B22;
+    border: 1px solid #30363D;
+    border-radius: 6px;
+    margin-bottom: 8px;
+    overflow: hidden;
+  }
+
+  .stat-item {
+    padding: 6px 6px 5px 6px;
+    text-align: center;
+    border-right: 1px solid #2A313C;
+  }
+
+  .stat-item:last-child { border-right: none; }
+
+  .stat-num {
+    font-family: "Georgia", "Times New Roman", serif;
+    font-size: 25px;
     font-weight: 700;
-    line-height: 1.05;
-    color: #9E1F1F;
+    line-height: 1.02;
+    color: #FFFFFF;
+    letter-spacing: -0.4px;
   }
 
-  .kpi-num.green { color: #156243; }
-  .kpi-num.navy { color: #163B6E; }
+  .stat-num.accent-blue { color: #79C0FF; }
+  .stat-num.accent-cyan { color: #67E8F9; }
+  .stat-num.accent-gold { color: #FDE047; }
+  .stat-num.accent-red  { color: #FF7B72; }
+  .stat-num.accent-grn  { color: #7EE787; }
 
-  .kpi-lbl {
-    font-family: "Avenir Next", "Helvetica Neue", sans-serif;
+  .stat-lbl {
     font-size: 8.6px;
     font-weight: 600;
     line-height: 1.18;
-    color: #36322D;
-    margin-top: 1.5px;
+    color: #9FB0C4;
+    margin-top: 2px;
   }
 
-  /* ==================== ROW 1: TOP 3 BIG HERO STORIES ==================== */
-  .hero-trio {
+  /* ==================== THREE HERO CARDS ==================== */
+  .hero-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 13px;
-    padding-bottom: 8px;
-    border-bottom: 2px solid #1A1815;
+    gap: 9px;
     margin-bottom: 8px;
   }
 
   .hero-card {
+    position: relative;
+    background: #161B22;
+    border: 1px solid #30363D;
+    border-radius: 6px;
+    overflow: hidden;
     display: flex;
     flex-direction: column;
   }
 
+  .hero-card.red   { border-left: 4px solid #E84545; background: radial-gradient(circle at 0% 0%, rgba(232, 69, 69, 0.22), transparent 58%), #161B22; }
+  .hero-card.blue  { border-left: 4px solid #2D6BE4; background: radial-gradient(circle at 0% 0%, rgba(45, 107, 228, 0.22), transparent 58%), #161B22; }
+  .hero-card.cyan  { border-left: 4px solid #06B6D4; background: radial-gradient(circle at 0% 0%, rgba(6, 182, 212, 0.22), transparent 58%), #161B22; }
+
   .hero-photo {
+    position: relative;
     width: 100%;
     height: 98px;
-    border: 1.5px solid #1F1C19;
     overflow: hidden;
-    background: #14171F;
-    margin-bottom: 5px;
+    background: #0D1117;
   }
 
   .hero-photo img {
@@ -348,185 +341,207 @@ const html = `<!doctype html>
     height: 100%;
     object-fit: cover;
     display: block;
-    filter: contrast(1.04) saturate(1.04);
+    filter: contrast(1.06) saturate(1.06);
   }
 
-  .hero-kicker {
-    font-family: "Avenir Next", "Helvetica Neue", sans-serif;
-    font-size: 9.5px;
+  .hero-photo::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(13,17,23,0.05) 45%, rgba(22,27,34,0.88) 100%);
+  }
+
+  .hero-body {
+    padding: 5px 9px 7px 9px;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+  }
+
+  .loc-pill {
+    display: inline-block;
+    align-self: flex-start;
+    font-size: 8.8px;
     font-weight: 800;
     letter-spacing: 0.8px;
     text-transform: uppercase;
-    color: #9E1F1F;
-    margin-bottom: 2px;
+    padding: 1.5px 6px;
+    border-radius: 3px;
+    margin-bottom: 3.5px;
   }
 
-  .hero-kicker.navy { color: #1E4E8C; }
-  .hero-kicker.violet { color: #5B2B82; }
+  .lp-red    { background: rgba(232, 69, 69, 0.22); color: #FF8A8A; border: 1px solid rgba(232, 69, 69, 0.55); }
+  .lp-blue   { background: rgba(45, 107, 228, 0.22); color: #93C5FD; border: 1px solid rgba(45, 107, 228, 0.55); }
+  .lp-cyan   { background: rgba(6, 182, 212, 0.22); color: #67E8F9; border: 1px solid rgba(6, 182, 212, 0.55); }
+  .lp-green  { background: rgba(61, 158, 95, 0.22); color: #86EFAC; border: 1px solid rgba(61, 158, 95, 0.55); }
+  .lp-gold   { background: rgba(212, 160, 23, 0.22); color: #FDE68A; border: 1px solid rgba(212, 160, 23, 0.55); }
+  .lp-purple { background: rgba(139, 92, 246, 0.22); color: #DDD6FE; border: 1px solid rgba(139, 92, 246, 0.55); }
 
   .hero-hl {
     font-family: "Georgia", "Times New Roman", serif;
-    font-size: 19.5px;
+    font-size: 18px;
     font-weight: 700;
-    line-height: 1.08;
-    letter-spacing: -0.2px;
-    color: #0E1726;
+    line-height: 1.09;
+    color: #FFFFFF;
     margin-bottom: 3.5px;
   }
 
   .hero-deck {
-    font-family: "Avenir Next", "Helvetica Neue", sans-serif;
-    font-size: 10.7px;
+    font-size: 10.4px;
     line-height: 1.27;
-    color: #26231F;
+    color: #B8C4D4;
   }
 
-  /* ==================== ROW 2: 4x2 CLEAN PHOTO CARDS (4–11) ==================== */
-  .mid-grid {
+  /* ==================== 8 SECONDARY ILLUSTRATED CARDS (4x2) ==================== */
+  .sec-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 8px 11px;
-    padding-bottom: 8px;
-    border-bottom: 2px solid #1A1815;
+    gap: 7px 9px;
     margin-bottom: 8px;
   }
 
-  .mid-card {
+  .sec-card {
+    background: #161B22;
+    border: 1px solid #30363D;
+    border-radius: 5px;
+    overflow: hidden;
     display: flex;
     flex-direction: column;
   }
 
-  .mid-photo {
+  .sc-red    { border-left: 3.5px solid #E84545; }
+  .sc-blue   { border-left: 3.5px solid #2D6BE4; }
+  .sc-green  { border-left: 3.5px solid #3D9E5F; }
+  .sc-gold   { border-left: 3.5px solid #D4A017; }
+  .sc-purple { border-left: 3.5px solid #8B5CF6; }
+  .sc-cyan   { border-left: 3.5px solid #06B6D4; }
+
+  .sec-photo {
+    position: relative;
     width: 100%;
-    height: 62px;
-    border: 1px solid #221F1C;
+    height: 58px;
     overflow: hidden;
-    background: #14171F;
-    margin-bottom: 4px;
+    background: #0D1117;
   }
 
-  .mid-photo img {
+  .sec-photo img {
     width: 100%;
     height: 100%;
     object-fit: cover;
     display: block;
-    filter: contrast(1.04) saturate(1.04);
+    filter: contrast(1.06) saturate(1.05);
   }
 
-  .mid-kicker {
-    font-family: "Avenir Next", "Helvetica Neue", sans-serif;
-    font-size: 8.6px;
+  .sec-photo::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(13,17,23,0) 50%, rgba(22,27,34,0.82) 100%);
+  }
+
+  .sec-body {
+    padding: 4px 7px 5.5px 7px;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+  }
+
+  .sec-kicker {
+    font-size: 8.2px;
     font-weight: 800;
     letter-spacing: 0.6px;
     text-transform: uppercase;
-    color: #9E1F1F;
     margin-bottom: 1.5px;
   }
 
-  .mid-kicker.green { color: #156243; }
-  .mid-kicker.orange { color: #B85D19; }
-  .mid-kicker.navy { color: #1E4E8C; }
-  .mid-kicker.plum { color: #5B3C88; }
-  .mid-kicker.teal { color: #0E7490; }
+  .sk-red    { color: #FF8A8A; }
+  .sk-blue   { color: #93C5FD; }
+  .sk-green  { color: #86EFAC; }
+  .sk-gold   { color: #FDE68A; }
+  .sk-purple { color: #DDD6FE; }
+  .sk-cyan   { color: #67E8F9; }
 
-  .mid-hl {
+  .sec-hl {
     font-family: "Georgia", serif;
-    font-size: 13.8px;
+    font-size: 13.2px;
     font-weight: 700;
     line-height: 1.1;
-    color: #0E1726;
-    margin-bottom: 2.5px;
+    color: #FFFFFF;
+    margin-bottom: 2px;
   }
 
-  .mid-deck {
-    font-family: "Avenir Next", "Helvetica Neue", sans-serif;
-    font-size: 9.8px;
-    line-height: 1.24;
-    color: #2B2723;
+  .sec-deck {
+    font-size: 9.5px;
+    line-height: 1.22;
+    color: #A6B4C6;
   }
 
-  /* ==================== ROW 3: WHERE IT HAPPENED + ALSO ON THURSDAY ==================== */
+  /* ==================== LOWER SPLIT: DARK WORLD MAP + ALSO ON 19 NOV ==================== */
   .lower-split {
     display: grid;
-    grid-template-columns: 324px 1fr;
-    gap: 14px;
+    grid-template-columns: 328px 1fr;
+    gap: 10px;
     flex: 1;
     min-height: 0;
     margin-bottom: 6px;
   }
 
   .map-panel {
+    background: #161B22;
+    border: 1px solid #30363D;
+    border-radius: 6px;
+    overflow: hidden;
     display: flex;
     flex-direction: column;
-    background: #122139;
-    border: 1.5px solid #0E1726;
-    color: #FAF6EE;
-    overflow: hidden;
   }
 
-  .map-bar {
+  .panel-head {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 5px 9px 2px 9px;
-    font-family: "Avenir Next", "Helvetica Neue", sans-serif;
-    font-size: 10px;
+    padding: 4.5px 9px;
+    background: #1C232D;
+    border-bottom: 1px solid #30363D;
+    font-size: 9.5px;
     font-weight: 800;
-    letter-spacing: 1.1px;
+    letter-spacing: 1px;
     text-transform: uppercase;
-    color: #F4EFE4;
+    color: #F0F6FC;
   }
 
-  .map-bar span.gold { color: #E3B341; }
+  .panel-head span.sub { color: #9FB0C4; font-weight: 700; }
 
-  .map-svg-box {
-    width: 324px;
-    height: 178px;
+  .map-wrap {
+    width: 328px;
+    height: 198px;
   }
 
-  .map-foot {
-    padding: 5px 9px 7px 9px;
-    font-family: "Avenir Next", "Helvetica Neue", sans-serif;
-    font-size: 9.2px;
-    line-height: 1.3;
-    color: #CBD5E1;
-    border-top: 1px solid rgba(255, 255, 255, 0.14);
+  .map-note {
+    padding: 4.5px 9px 5px 9px;
+    font-size: 8.9px;
+    line-height: 1.28;
+    color: #9FB0C4;
+    border-top: 1px solid #2A313C;
     margin-top: auto;
   }
 
-  .map-foot strong { color: #FDE68A; font-weight: 700; }
+  .map-note strong { color: #FFFFFF; }
 
-  /* ALSO ON THURSDAY 19 NOVEMBER (23 crisp stories 12–34) */
   .also-panel {
+    background: #161B22;
+    border: 1px solid #30363D;
+    border-radius: 6px;
+    overflow: hidden;
     display: flex;
     flex-direction: column;
     min-height: 0;
   }
 
-  .also-head {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-family: "Avenir Next", "Helvetica Neue", sans-serif;
-    font-size: 10.2px;
-    font-weight: 800;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    color: #9E1F1F;
-    border-bottom: 1.5px solid #141210;
-    padding-bottom: 2.5px;
-    margin-bottom: 5px;
-  }
-
-  .also-head span.sub {
-    color: #4A453E;
-    font-weight: 700;
-  }
-
   .also-cols {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 0 14px;
+    gap: 0 12px;
+    padding: 5px 9px;
     flex: 1;
   }
 
@@ -538,248 +553,261 @@ const html = `<!doctype html>
   }
 
   .also-list li {
-    font-family: "Avenir Next", "Helvetica Neue", sans-serif;
-    font-size: 9.8px;
-    line-height: 1.24;
-    color: #1D1A17;
+    font-size: 9.6px;
+    line-height: 1.21;
+    color: #C9D3E0;
     display: flex;
     align-items: baseline;
-    gap: 4.5px;
-    padding: 1.2px 0;
-    border-bottom: 1px dotted #D6CEBC;
+    gap: 5px;
+    padding: 1px 0;
+    border-bottom: 1px dotted #2A313C;
   }
 
   .also-list li:last-child { border-bottom: none; }
 
   .a-num {
-    font-size: 9.4px;
+    font-size: 9px;
     font-weight: 800;
-    color: #9E1F1F;
+    color: #FF7B72;
     min-width: 14px;
     flex-shrink: 0;
   }
 
   .also-list li strong {
     font-weight: 800;
-    color: #0E1726;
+    color: #FFFFFF;
   }
 
-  /* ==================== STRICT DATE CHECK + FOOTER ==================== */
+  /* ==================== DATE CHECK + FOOTER ==================== */
   .date-check {
-    border: 1.5px solid #B3261E;
-    background: #F4E9E4;
-    padding: 4.5px 9px;
-    font-family: "Avenir Next", "Helvetica Neue", sans-serif;
-    font-size: 9.2px;
-    line-height: 1.3;
-    color: #241C1A;
+    background: rgba(232, 69, 69, 0.12);
+    border: 1px solid rgba(232, 69, 69, 0.48);
+    border-left: 3.5px solid #E84545;
+    border-radius: 4px;
+    padding: 4px 9px;
+    font-size: 8.9px;
+    line-height: 1.28;
+    color: #D2DCE8;
     margin-bottom: 4px;
   }
 
   .date-check strong {
-    color: #9E1F1F;
+    color: #FF8A8A;
     font-weight: 800;
-    letter-spacing: 0.4px;
     text-transform: uppercase;
+    letter-spacing: 0.4px;
   }
 
   .footer {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    font-family: "Avenir Next", "Helvetica Neue", sans-serif;
-    font-size: 8.8px;
-    color: #4D463E;
+    font-size: 8.6px;
+    color: #8B98A9;
   }
 
-  .footer strong { color: #0E1726; }
+  .footer strong { color: #D2DCE8; }
 </style>
 </head>
 <body>
   <div class="page">
-    <!-- MASTHEAD -->
-    <header>
-      <div class="top-rule-row">
-        <span>The World In One Day · International Gazette</span>
-        <span class="right">Thursday's News · 34 Verified Stories · 6 Continents</span>
-      </div>
-      <div class="date-header">
-        <h1 class="date-main">Thursday 19 November 2026</h1>
-        <div class="cal-pill">
-          <span class="cal-pill-m">NOV</span>
-          <span class="cal-pill-d">19</span>
+    <!-- HERO HEADER -->
+    <header class="header">
+      <div class="header-top">
+        <h1 class="date-title">Thursday 19 November 2026</h1>
+        <div class="header-right">
+          <div class="eyebrow">The World In One Day · Global Front Page</div>
+          <div class="subtitle">34 Verified Stories · 6 Continents &amp; Space · One Day</div>
         </div>
       </div>
-      <div class="sub-banner">Trump, Xi &amp; Putin meet in Shenzhen · World court rules on Myanmar · Anthropic's record IPO debuts · GTA VI unlocks worldwide</div>
-
-      <!-- CONTINENT BREADTH BAR -->
-      <div class="region-bar">
-        <div class="r-seg rs-asia">ASIA · 9</div>
-        <div class="r-seg rs-amer">AMERICAS · 7</div>
-        <div class="r-seg rs-eur">EUROPE · 6</div>
-        <div class="r-seg rs-me">MIDEAST · 4</div>
-        <div class="r-seg rs-afr">AFRICA · 4</div>
-        <div class="r-seg rs-oce">OCEANIA · 2</div>
-        <div class="r-seg rs-wld">WORLD · 2</div>
-      </div>
-
-      <!-- 6 BIG KPI NUMBERS -->
-      <div class="kpi-strip">
-        <div class="kpi-cell">
-          <div class="kpi-num">$81.3bn</div>
-          <div class="kpi-lbl">Anthropic IPO — largest stock listing on record</div>
-        </div>
-        <div class="kpi-cell">
-          <div class="kpi-num navy">15m+</div>
-          <div class="kpi-lbl">GTA VI pre-orders banked before rollout</div>
-        </div>
-        <div class="kpi-cell">
-          <div class="kpi-num">730,000</div>
-          <div class="kpi-lbl">Rohingya refugees — ICJ verdict day</div>
-        </div>
-        <div class="kpi-cell">
-          <div class="kpi-num navy">550,000</div>
-          <div class="kpi-lbl">South Koreans sit AI-strict CSAT exam</div>
-        </div>
-        <div class="kpi-cell">
-          <div class="kpi-num green">$120bn</div>
-          <div class="kpi-lbl">Annual adaptation aid deadlock at COP31</div>
-        </div>
-        <div class="kpi-cell">
-          <div class="kpi-num">47,000+</div>
-          <div class="kpi-lbl">Evacuated in Odisha ahead of Akvan</div>
-        </div>
+      <div class="continent-row">
+        <div class="c-pill cp-asia">Asia-Pacific · 9</div>
+        <div class="c-pill cp-amer">Americas · 7</div>
+        <div class="c-pill cp-eur">Europe · 6</div>
+        <div class="c-pill cp-me">Middle East · 4</div>
+        <div class="c-pill cp-afr">Africa · 4</div>
+        <div class="c-pill cp-oce">Oceania &amp; Space · 4</div>
       </div>
     </header>
 
-    <!-- ROW 1: TOP 3 REALISTIC PHOTO HERO LEADS -->
-    <section class="hero-trio">
-      <article class="hero-card">
+    <!-- GIANT STAT BAR -->
+    <section class="stat-bar">
+      <div class="stat-item">
+        <div class="stat-num accent-blue">$81.3bn</div>
+        <div class="stat-lbl">Anthropic IPO — largest on record</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num accent-cyan">15m+</div>
+        <div class="stat-lbl">GTA VI pre-orders at launch</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num accent-grn">730,000</div>
+        <div class="stat-lbl">Rohingya refugees — ICJ verdict</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">550,000</div>
+        <div class="stat-lbl">S. Koreans sit AI-strict CSAT</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num accent-gold">$120bn</div>
+        <div class="stat-lbl">Adaptation aid gap at COP31</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num accent-red">47,000+</div>
+        <div class="stat-lbl">Odisha Akvan evacuations</div>
+      </div>
+    </section>
+
+    <!-- THREE HERO PHOTO CARDS -->
+    <section class="hero-grid">
+      <article class="hero-card red">
         <div class="hero-photo"><img src="${photos.apec}" alt="Shenzhen APEC Trilateral Summit" /></div>
-        <div class="hero-kicker">1 · Shenzhen · Summit</div>
-        <h2 class="hero-hl">Trump, Xi &amp; Putin hold first three-way summit</h2>
-        <p class="hero-deck">Trump holds 40-min Putin talk and meets Xi ("strategic stability") before historic Shenzhen trilateral on Ukraine, arms &amp; trade.</p>
+        <div class="hero-body">
+          <span class="loc-pill lp-red">1 · Shenzhen · Summit</span>
+          <h2 class="hero-hl">Trump, Xi &amp; Putin Hold First Three-Way Summit</h2>
+          <p class="hero-deck">Trump holds 40-min Putin talk and meets Xi ("strategic stability") ahead of historic Shenzhen APEC trilateral on arms, Ukraine &amp; trade.</p>
+        </div>
       </article>
 
-      <article class="hero-card">
-        <div class="hero-photo"><img src="${photos.icj}" alt="Peace Palace ICJ The Hague" /></div>
-        <div class="hero-kicker navy">2 · The Hague · Justice</div>
-        <h2 class="hero-hl">World court rules on Myanmar genocide</h2>
-        <p class="hero-deck">ICJ delivers its final, non-appealable judgment in <em>The Gambia v. Myanmar</em> (11 states intervening) at 09:00 UTC.</p>
+      <article class="hero-card blue">
+        <div class="hero-photo"><img src="${photos.ipo}" alt="Anthropic Nasdaq IPO" /></div>
+        <div class="hero-body">
+          <span class="loc-pill lp-blue">2 · New York · Markets</span>
+          <h2 class="hero-hl">Anthropic Debuts in Biggest IPO on Record</h2>
+          <p class="hero-deck">Priced at $83, above range, raising $81.3bn public (~$1.5tn valuation). Claude maker opens Nasdaq trading today under ticker ANT.</p>
+        </div>
       </article>
 
-      <article class="hero-card">
-        <div class="hero-photo"><img src="${photos.gaming}" alt="GTA VI Global Midnight Launch" /></div>
-        <div class="hero-kicker violet">3 · Worldwide · Culture</div>
-        <h2 class="hero-hl">GTA VI arrives after a 13-year wait</h2>
-        <p class="hero-deck">Console sequel unlocks at midnight across markets (New Zealand first, 212 GB) on PS5 &amp; Xbox; Take-Two climbs over 8%.</p>
-      </article>
-    </section>
-
-    <!-- ROW 2: 8 CLEAN REALISTIC PHOTO FEATURE CARDS (4–11) -->
-    <section class="mid-grid">
-      <article class="mid-card">
-        <div class="mid-photo"><img src="${photos.ipo}" alt="Anthropic Nasdaq IPO" /></div>
-        <div class="mid-kicker green">4 · New York · Markets</div>
-        <h3 class="mid-hl">Anthropic debuts on Nasdaq at $83</h3>
-        <p class="mid-deck">Priced above range (~$1.5tn val., $81.3bn public offer); shares open today as ANT.</p>
-      </article>
-
-      <article class="mid-card">
-        <div class="mid-photo"><img src="${photos.gulf}" alt="Middle East Gaza & Gulf" /></div>
-        <div class="mid-kicker orange">5 · Gaza &amp; Gulf · War</div>
-        <h3 class="mid-hl">Gulf tensions flare; tanks cross Gaza line</h3>
-        <p class="mid-deck">Iran defends base strikes as Gulf states condemn escalation; US-backed Gaza raid displaces families.</p>
-      </article>
-
-      <article class="mid-card">
-        <div class="mid-photo"><img src="${photos.cop31}" alt="COP31 Antalya Climate Talks" /></div>
-        <div class="mid-kicker green">6 · Antalya · Climate</div>
-        <h3 class="mid-hl">COP31 enters final stretch deadlocked</h3>
-        <p class="mid-deck">Ministers clash over 21 issues on fossil-fuel phaseout &amp; $120bn aid; new texts due Thu.</p>
-      </article>
-
-      <article class="mid-card">
-        <div class="mid-photo"><img src="${photos.cyclone}" alt="Cyclone Akvan Bay of Bengal" /></div>
-        <div class="mid-kicker">7 · Odisha · Storm</div>
-        <h3 class="mid-hl">Cyclone Akvan bears down on India</h3>
-        <p class="mid-deck">Over 47,000 coastal residents evacuated ahead of Friday landfall near Puri.</p>
-      </article>
-
-      <article class="mid-card">
-        <div class="mid-photo"><img src="${photos.berlin}" alt="Berlin European Leaders Summit" /></div>
-        <div class="mid-kicker navy">8 · Berlin · Europe</div>
-        <h3 class="mid-hl">Allies hold Berlin Ukraine summit</h3>
-        <p class="mid-deck">France, UK, Italy, Poland &amp; Ukraine leaders meet to coordinate peace-talk terms.</p>
-      </article>
-
-      <article class="mid-card">
-        <div class="mid-photo"><img src="${photos.africa}" alt="DR Congo Ebola Response" /></div>
-        <div class="mid-kicker plum">9 · Africa · Crisis</div>
-        <h3 class="mid-hl">DRC Ebola tops 11,000; Horn buildup</h3>
-        <p class="mid-deck">WHO logs 5,400+ dead across 8 Congo provinces; Ethiopia &amp; Eritrea mass troops.</p>
-      </article>
-
-      <article class="mid-card">
-        <div class="mid-photo"><img src="${photos.cricket}" alt="Wellington Test Cricket" /></div>
-        <div class="mid-kicker teal">10 · Wellington · Sport</div>
-        <h3 class="mid-hl">Bumrah cuts New Zealand to 60&#8209;4</h3>
-        <p class="mid-deck">Returning India pacer takes 2–17 at lunch on day one of the 1st Test at Basin Reserve.</p>
-      </article>
-
-      <article class="mid-card">
-        <div class="mid-photo"><img src="${photos.voyager}" alt="Voyager 1 Deep Space" /></div>
-        <div class="mid-kicker navy">11 · Pasadena · Space</div>
-        <h3 class="mid-hl">NASA briefs on Voyager 1 milestone</h3>
-        <p class="mid-deck">Agency holds Thursday briefing on 49-yr probe reaching one light-day (25.9B km).</p>
+      <article class="hero-card cyan">
+        <div class="hero-photo"><img src="${photos.gaming}" alt="GTA VI Global Launch" /></div>
+        <div class="hero-body">
+          <span class="loc-pill lp-cyan">3 · Worldwide · Culture</span>
+          <h2 class="hero-hl">GTA VI Arrives After a 13-Year Wait</h2>
+          <p class="hero-deck">Rockstar's sequel unlocks at midnight across global markets (New Zealand first, 212 GB) on PS5 &amp; Xbox; Take-Two climbs over 8%.</p>
+        </div>
       </article>
     </section>
 
-    <!-- ROW 3: WHERE IT HAPPENED MAP + ALSO ON THURSDAY 19 NOVEMBER (12–34) -->
+    <!-- EIGHT SECONDARY ILLUSTRATED CARDS (4–11) -->
+    <section class="sec-grid">
+      <article class="sec-card sc-green">
+        <div class="sec-photo"><img src="${photos.icj}" alt="Peace Palace ICJ The Hague" /></div>
+        <div class="sec-body">
+          <div class="sec-kicker sk-green">4 · The Hague · Law</div>
+          <h3 class="sec-hl">World Court Rules on Myanmar Genocide</h3>
+          <p class="sec-deck">ICJ delivers final, binding verdict in <em>The Gambia v. Myanmar</em> at 09:00 UTC.</p>
+        </div>
+      </article>
+
+      <article class="sec-card sc-gold">
+        <div class="sec-photo"><img src="${photos.cop31}" alt="COP31 Antalya Climate Summit" /></div>
+        <div class="sec-body">
+          <div class="sec-kicker sk-gold">5 · Antalya · Climate</div>
+          <h3 class="sec-hl">COP31 Enters Final Stretch Deadlocked</h3>
+          <p class="sec-deck">Ministers clash across 21 issues on fossil-fuel exit &amp; $120bn aid; new texts Thu.</p>
+        </div>
+      </article>
+
+      <article class="sec-card sc-red">
+        <div class="sec-photo"><img src="${photos.cyclone}" alt="Cyclone Akvan Bay of Bengal" /></div>
+        <div class="sec-body">
+          <div class="sec-kicker sk-red">6 · Odisha · Storm</div>
+          <h3 class="sec-hl">Cyclone Akvan Bears Down on India</h3>
+          <p class="sec-deck">Over 47,000 evacuated along eastern coast ahead of Friday landfall near Puri.</p>
+        </div>
+      </article>
+
+      <article class="sec-card sc-green">
+        <div class="sec-photo"><img src="${photos.berlin}" alt="Berlin Ukraine Allies Summit" /></div>
+        <div class="sec-body">
+          <div class="sec-kicker sk-green">7 · Berlin · Europe</div>
+          <h3 class="sec-hl">Allies Hold Berlin Ukraine Summit</h3>
+          <p class="sec-deck">France, UK, Italy, Poland &amp; Ukraine leaders coordinate European peace terms.</p>
+        </div>
+      </article>
+
+      <article class="sec-card sc-gold">
+        <div class="sec-photo"><img src="${photos.gulf}" alt="Persian Gulf & Gaza Tensions" /></div>
+        <div class="sec-body">
+          <div class="sec-kicker sk-gold">8 · Gaza &amp; Gulf · War</div>
+          <h3 class="sec-hl">Gulf Tensions Flare; Gaza Tank Raid</h3>
+          <p class="sec-deck">Iran defends strikes as Gulf states condemn; US-backed Gaza raid displaces civilians.</p>
+        </div>
+      </article>
+
+      <article class="sec-card sc-purple">
+        <div class="sec-photo"><img src="${photos.africa}" alt="DR Congo Ebola Field Response" /></div>
+        <div class="sec-body">
+          <div class="sec-kicker sk-purple">9 · Africa · Crisis</div>
+          <h3 class="sec-hl">DRC Ebola Tops 11,000; Horn Buildup</h3>
+          <p class="sec-deck">WHO logs 5,400+ dead across 8 Congo provinces; Ethiopia &amp; Eritrea mass troops.</p>
+        </div>
+      </article>
+
+      <article class="sec-card sc-cyan">
+        <div class="sec-photo"><img src="${photos.cricket}" alt="Wellington Basin Reserve Cricket" /></div>
+        <div class="sec-body">
+          <div class="sec-kicker sk-cyan">10 · Wellington · Sport</div>
+          <h3 class="sec-hl">Bumrah Cuts New Zealand to 60&#8209;4</h3>
+          <p class="sec-deck">Returning India star takes 2–17 at lunch on day one of the 1st Test in Wellington.</p>
+        </div>
+      </article>
+
+      <article class="sec-card sc-blue">
+        <div class="sec-photo"><img src="${photos.voyager}" alt="Voyager 1 Interstellar Probe" /></div>
+        <div class="sec-body">
+          <div class="sec-kicker sk-blue">11 · Pasadena · Space</div>
+          <h3 class="sec-hl">NASA Briefs on Voyager 1 Milestone</h3>
+          <p class="sec-deck">Thursday briefing marks 49-yr probe reaching one light-day (25.9B km).</p>
+        </div>
+      </article>
+    </section>
+
+    <!-- LOWER SPLIT: GLOWING NATURAL EARTH MAP + ALSO ON 19 NOV WIRE -->
     <section class="lower-split">
       <aside class="map-panel">
-        <div class="map-bar">
+        <div class="panel-head">
           <span>Where It Happened</span>
-          <span class="gold">Natural Earth Map</span>
+          <span class="sub">Pins 1–11 · Natural Earth</span>
         </div>
-        <div class="map-svg-box">${worldMapSvg}</div>
-        <div class="map-foot">
-          <strong>Red pins (1–10)</strong> mark featured world stories; <strong>gold pin (11)</strong> marks NASA Pasadena (Voyager 1); grey dots mark briefs 12–34.
+        <div class="map-wrap">${worldMapSvg}</div>
+        <div class="map-note">
+          <strong>Glowing pins (1–11)</strong> match continent colors for featured stories above; slate dots locate global briefs <strong>12–34</strong>.
         </div>
       </aside>
 
       <div class="also-panel">
-        <div class="also-head">
+        <div class="panel-head">
           <span>Also On Thursday 19 November — 23 More Stories</span>
           <span class="sub">Global Wire · 12–34</span>
         </div>
         <div class="also-cols">
           <ul class="also-list">
-            <li><span class="a-num">12</span><span><strong>SHENZHEN</strong> — Xi pledges $20m for APEC &amp; open AI trade.</span></li>
-            <li><span class="a-num">13</span><span><strong>TOKYO–MOSCOW</strong> — PM Takaichi meets Putin (1st since 2022).</span></li>
-            <li><span class="a-num">14</span><span><strong>SEOUL–BEIJING</strong> — Lee &amp; Xi seal FTA deal; K-culture eases.</span></li>
-            <li><span class="a-num">15</span><span><strong>SEOUL</strong> — 550k sit CSAT under AI pencil-only rule &amp; freeze.</span></li>
-            <li><span class="a-num">16</span><span><strong>OTTAWA</strong> — PM Carney holds 20-min APEC trade talk with Trump.</span></li>
-            <li><span class="a-num">17</span><span><strong>CANBERRA</strong> — Albanese lobbies Xi to lift 55% beef tariffs.</span></li>
-            <li><span class="a-num">18</span><span><strong>TOKYO</strong> — India &amp; Japan hold day 2 of 2+2 defense talks.</span></li>
-            <li><span class="a-num">19</span><span><strong>NEW DELHI</strong> — Envoy signals India–Canada pact for Dec visit.</span></li>
-            <li><span class="a-num">20</span><span><strong>DHAKA</strong> — Troops patrol amid unrest over Hasina return.</span></li>
-            <li><span class="a-num">21</span><span><strong>BENGALURU</strong> — Amazon pledges $7bn green push; schools open.</span></li>
-            <li><span class="a-num">22</span><span><strong>INDIA</strong> — Country readies indigenous H5N1 avian-flu vaccine.</span></li>
-            <li><span class="a-num">23</span><span><strong>PARIS</strong> — IEA releases World Energy Outlook; OECD GDP due.</span></li>
+            <li><span class="a-num">12</span><span><strong>SHENZHEN</strong> — Xi pledges $20m for APEC &amp; AI trade.</span></li>
+            <li><span class="a-num">13</span><span><strong>TOKYO–MOSCOW</strong> — Takaichi meets Putin (1st since '22).</span></li>
+            <li><span class="a-num">14</span><span><strong>SEOUL–BEIJING</strong> — Lee &amp; Xi seal FTA; K-culture eases.</span></li>
+            <li><span class="a-num">15</span><span><strong>SEOUL</strong> — 550k sit CSAT under AI pencil rule &amp; freeze.</span></li>
+            <li><span class="a-num">16</span><span><strong>OTTAWA</strong> — Carney &amp; Trump hold 20-min APEC talk.</span></li>
+            <li><span class="a-num">17</span><span><strong>CANBERRA</strong> — Albanese lobbies Xi on 55% beef tariffs.</span></li>
+            <li><span class="a-num">18</span><span><strong>TOKYO</strong> — India &amp; Japan hold day 2 of 2+2 talks.</span></li>
+            <li><span class="a-num">19</span><span><strong>NEW DELHI</strong> — Envoy signals India–Canada Dec pact.</span></li>
+            <li><span class="a-num">20</span><span><strong>DHAKA</strong> — Troops patrol amid Hasina return unrest.</span></li>
+            <li><span class="a-num">21</span><span><strong>BENGALURU</strong> — Amazon pledges $7bn; schools reopen.</span></li>
+            <li><span class="a-num">22</span><span><strong>INDIA</strong> — Country readies indigenous H5N1 vaccine.</span></li>
+            <li><span class="a-num">23</span><span><strong>PARIS</strong> — IEA Energy Outlook &amp; OECD GDP due.</span></li>
           </ul>
           <ul class="also-list">
-            <li><span class="a-num">24</span><span><strong>BREMEN</strong> — ESA awards OHB €102m ClearSpace-1 debris deal.</span></li>
-            <li><span class="a-num">25</span><span><strong>MADRID</strong> — Sánchez &amp; Feijóo hold debate as storm hits north.</span></li>
-            <li><span class="a-num">26</span><span><strong>KHARKIV</strong> — Ukraine &amp; Russia fight inside gas pipeline (BBC).</span></li>
-            <li><span class="a-num">27</span><span><strong>WASHINGTON</strong> — Walmart reports Q3 results; housing at low.</span></li>
+            <li><span class="a-num">24</span><span><strong>BREMEN</strong> — ESA signs €102m ClearSpace-1 debris deal.</span></li>
+            <li><span class="a-num">25</span><span><strong>MADRID</strong> — Sánchez &amp; Feijóo debate amid storm.</span></li>
+            <li><span class="a-num">26</span><span><strong>KHARKIV</strong> — Troops fight inside gas pipeline (BBC).</span></li>
+            <li><span class="a-num">27</span><span><strong>WASHINGTON</strong> — Walmart Q3 due; housing hits low.</span></li>
             <li><span class="a-num">28</span><span><strong>CARACAS</strong> — Hegseth signs US–Venezuela military pact.</span></li>
-            <li><span class="a-num">29</span><span><strong>MEXICO CITY</strong> — Lower house bans cruelty, affirms sentience.</span></li>
-            <li><span class="a-num">30</span><span><strong>CALIFORNIA</strong> — Pacific atmospheric river brings flood alerts.</span></li>
-            <li><span class="a-num">31</span><span><strong>SOMALIA</strong> — Shabelle River nears flood; Mogadishu blasts UAE.</span></li>
-            <li><span class="a-num">32</span><span><strong>SUDAN</strong> — War-crimes probe urged over El Obeid drone strikes.</span></li>
-            <li><span class="a-num">33</span><span><strong>VIENNA</strong> — IAEA chief Grossi backs US–Saudi civil nuclear pact.</span></li>
-            <li><span class="a-num">34</span><span><strong>WORLD</strong> — Cambridge Dictionary picks "human" as Word of 2026.</span></li>
+            <li><span class="a-num">29</span><span><strong>MEXICO CITY</strong> — House bans cruelty, affirms sentience.</span></li>
+            <li><span class="a-num">30</span><span><strong>CALIFORNIA</strong> — Atmospheric river brings flood alerts.</span></li>
+            <li><span class="a-num">31</span><span><strong>SOMALIA</strong> — Shabelle flood alert; Mogadishu hits UAE.</span></li>
+            <li><span class="a-num">32</span><span><strong>SUDAN</strong> — War-crimes probe urged on El Obeid strikes.</span></li>
+            <li><span class="a-num">33</span><span><strong>VIENNA</strong> — IAEA backs US–Saudi civil nuclear pact.</span></li>
+            <li><span class="a-num">34</span><span><strong>WORLD</strong> — Cambridge names "human" Word of 2026.</span></li>
           </ul>
         </div>
       </div>
@@ -792,7 +820,7 @@ const html = `<!doctype html>
 
     <!-- FOOTER -->
     <footer class="footer">
-      <span>Every story happened, or was first reported, on <strong>Thursday 19 November 2026</strong>. Disputed claims attributed. Original visuals &amp; Natural Earth map.</span>
+      <span>Every story happened, or was first reported, on <strong>Thursday 19 November 2026</strong>. Disputed claims attributed. Original editorial visuals &amp; Natural Earth map.</span>
       <span><strong>Sources:</strong> Reuters · AP · AFP · BBC · UN · ICJ · WHO · NASA · ESA · IMD · Yonhap</span>
     </footer>
   </div>
@@ -823,9 +851,9 @@ execFileSync('python3', [
 from PIL import Image
 im = Image.open("${rawPngPath}").convert("RGB")
 assert im.size == (1024, 1024), f"Unexpected size: {im.size}"
-im.save("${finalEntryPath}", format="JPEG", quality=89, optimize=True, subsampling=0)
+im.save("${finalEntryPath}", format="JPEG", quality=90, optimize=True, subsampling=0)
 im.resize((300, 300), Image.Resampling.LANCZOS).save("${preview300Path}", format="PNG")
-print("Saved v5 entry.png (JPEG 1024x1024) and preview-300.png")
+print("Saved v6 dark-mode entry.png (JPEG 1024x1024) and preview-300.png")
 `,
 ], { stdio: 'inherit' });
 
